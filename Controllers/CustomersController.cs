@@ -43,11 +43,11 @@ namespace Hostitan.API.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        [Route("/{id}/orders/{id}")]
-        public IActionResult OrdersByCustomerID(Guid customerId,Guid orderID)
-        {
-                return Ok();
-        }
+        // [HttpGet]
+        // [Route("/{id}/orders/{id}")]
+        // public IActionResult OrdersByCustomerID(Guid customerId,Guid orderID)
+        // {
+        //         return Ok();
+        // }
     }
 }
