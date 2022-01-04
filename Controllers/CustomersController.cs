@@ -3,6 +3,7 @@ using Hostitan.API.DTO.Customers;
 using Hostitan.API.Services;
 using System.Collections.Generic;
 using System.Linq;
+using Hostitan.API.DTO.Orders;
 
 namespace Hostitan.API.Controllers
 {
@@ -10,11 +11,14 @@ namespace Hostitan.API.Controllers
     [Route("customers")]
     public class CustomersController : ControllerBase
     {
-        public ICustomerServices customerServices;
+        private readonly ICustomerServices customerServices;
+        private readonly IOrderServices orderServices;
 
-        public CustomersController(ICustomerServices _CustomerService)
+
+        public CustomersController(ICustomerServices _CustomerService, IOrderServices _orderServices)
         {
             customerServices = _CustomerService;
+            orderServices = _orderServices;
         }
 
         [HttpGet]
@@ -36,18 +40,16 @@ namespace Hostitan.API.Controllers
 
         /////////////////////////Orders Details
 
-        [HttpGet]
-        [Route("/{id}/orders")]
-        public IActionResult GetOrders(Guid customer_id)
+        [HttpGet("{id}/orders")]
+        public async Task<ActionResult<ServiceResponse<List<GetOrdersDTO>>>> GetOrdersByCustomerID(Guid id)
         {
-            return Ok();
+            return Ok(await orderServices.GetCustomerOrders(id));
         }
 
-        // [HttpGet]
-        // [Route("/{id}/orders/{id}")]
-        // public IActionResult OrdersByCustomerID(Guid customerId,Guid orderID)
-        // {
-        //         return Ok();
-        // }
+        [HttpGet("{customerId}/orders/{orderId}")]
+        public async Task<ActionResult<ServiceResponse<List<GetOrdersDTO>>>> GetOrdersByOrderID(Guid customerId,Guid orderId)
+        {
+            return Ok(await orderServices.GetCustomerOrdersByOrderId(customerId,orderId));
+        }
     }
 }

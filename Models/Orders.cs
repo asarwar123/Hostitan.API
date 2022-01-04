@@ -10,6 +10,11 @@ namespace Hostitan.API.Models
         public Status status { get; set; } = Status.placed;
 
         [DataType(DataType.DateTime)]
-        public DateTime created_at { get; set; } = DateTime.Now;       
+        public DateTime created_at { get; set; } = DateTime.Now;  
+
+        public Orders(string _customerID)
+        {
+            customer_id = Guid.Parse(_customerID);
+        }     
     }
 }

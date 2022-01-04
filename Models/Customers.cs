@@ -29,12 +29,13 @@ namespace Hostitan.API.Models
         public DateTime created_at { get; set; } = DateTime.Now;
         public Customers(){}
         
-        public Customers(string _firstname,string _lastname,string _city,string _email)
+        public Customers(string _id,string _firstname,string _lastname,string _city,string _email)
         {
-            this.first_name = _firstname;
-            this.last_name = _lastname;
-            this.city = _city;
-            this.email = _email;
+            id = Guid.Parse(_id);
+            first_name = _firstname;
+            last_name = _lastname;
+            city = _city;
+            email = _email;
         }
 
     }
