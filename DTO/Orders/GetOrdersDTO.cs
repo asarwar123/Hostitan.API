@@ -6,7 +6,9 @@ namespace Hostitan.API.DTO.Orders
     public class GetOrdersDTO
     {
         public Guid id { get; set; }
-        public GetCustomersDTO customer { get; private set; }
+        //unable to do this 
+        //public GetCustomersDTO customer { get; private set; }
+        public Guid customer_id { get; set; }
         public Status status { get; set; }
         public DateTime created_at { get; set; } 
     }

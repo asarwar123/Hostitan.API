@@ -48,5 +48,13 @@ namespace Hostitan.API.Services
 
             return resp;
         }
+
+        public GetCustomersDTO GetCustomer(Guid id)
+        {
+            GetCustomersDTO customerDetails;
+            customerDetails = _mapper.Map<GetCustomersDTO>(customers.FirstOrDefault(c=>c.id == id));
+
+            return customerDetails;
+        }
     }
 }
