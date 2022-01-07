@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hostitan.API.Models
 {
@@ -6,6 +7,8 @@ namespace Hostitan.API.Models
     {
         [Key]
         public Guid id { get; set; } = Guid.NewGuid();
+
+        [ForeignKey("Customers")]
         public Guid customer_id { get; set; }
         public Status status { get; set; } = Status.placed;
 
@@ -16,5 +19,8 @@ namespace Hostitan.API.Models
         {
             customer_id = Guid.Parse(_customerID);
         }     
+        public Orders()
+        {
+        }   
     }
 }

@@ -1,16 +1,21 @@
 using AutoMapper;
+using Hostitan.API.Data;
 using Hostitan.API.DTO.Customers;
 using Hostitan.API.DTO.Orders;
 using Hostitan.API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hostitan.API.Services
 {
     public class CustomerServices : ICustomerServices
     {
         private readonly IMapper _mapper;
-        public CustomerServices(IMapper mapper)
+        private readonly DatabaseContext _dbContext;
+
+        public CustomerServices(IMapper mapper,DatabaseContext dbContext)
         {
-            _mapper = mapper;            
+            _mapper = mapper;
+            _dbContext = dbContext;
         }
         private static List<Customers> customers = new List<Customers>{
             new Customers("ba071a72-d963-4739-aae4-5a50088528b9","Azeem","Sarwar","RWP","azeem.sawar@gmail.com"),
@@ -21,8 +26,9 @@ namespace Hostitan.API.Services
         public async Task<ServiceResponse<List<GetCustomersDTO>>> GetAllCustomers()
         {
             ServiceResponse<List<GetCustomersDTO>> resp = new ServiceResponse<List<GetCustomersDTO>>();
+            var dbCustomers = await _dbContext.Customers.ToListAsync();
             //resp.Data = _mapper.Map<GetCustomersDTO>(customers);
-           resp.Data = (customers.Select(c => _mapper.Map<GetCustomersDTO>(c))).ToList();
+           resp.Data = (dbCustomers.Select(c => _mapper.Map<GetCustomersDTO>(c))).ToList();
             resp.message = "All Customers Data";
 
             return resp;
@@ -31,7 +37,8 @@ namespace Hostitan.API.Services
         public async Task<ServiceResponse<GetCustomersDTO>> GetCustomerById(Guid id)
         {
             ServiceResponse<GetCustomersDTO> resp = new ServiceResponse<GetCustomersDTO>();
-            resp.Data = _mapper.Map<GetCustomersDTO>(customers.FirstOrDefault(c=>c.id == id));
+            var dbCustomers = await _dbContext.Customers.FirstOrDefaultAsync(c=>c.id ==id);
+            resp.Data = _mapper.Map<GetCustomersDTO>(dbCustomers);
             resp.message = "A single customer data";
 
             return resp;
@@ -41,9 +48,10 @@ namespace Hostitan.API.Services
         {
             ServiceResponse<List<GetCustomersDTO>> resp = new ServiceResponse<List<GetCustomersDTO>>();
             
-           customers.Add(_mapper.Map<Customers>(_newCustomer));
+           _dbContext.Customers.Add(_mapper.Map<Customers>(_newCustomer));
+           await _dbContext.SaveChangesAsync();
 
-            resp.Data = customers.Select(c => _mapper.Map<GetCustomersDTO>(c)).ToList();
+            resp.Data = await _dbContext.Customers.Select(c => _mapper.Map<GetCustomersDTO>(c)).ToListAsync();
             resp.message = "New customer Added";
 
             return resp;

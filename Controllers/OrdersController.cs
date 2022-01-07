@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Hostitan.API.Controllers
 {
     [ApiController]
-    [Route("customers")]
+    [Route("orders")]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderServices _orderServices;
