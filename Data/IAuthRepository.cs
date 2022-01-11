@@ -7,7 +7,7 @@ namespace Hostitan_API.Data
     {
          Task<ServiceResponse<int>> Register(AddUserDTO user);
 
-         Task<ServiceResponse<int>> Login(string userName,string password);
+         Task<ServiceResponse<string>> Login(string userName,string password);
 
          Task<bool> UserExists(string userName);
     }

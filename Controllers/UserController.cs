@@ -22,10 +22,23 @@ namespace Hostitan.API.Controllers
             return Ok("User is running.");
         }
 
-        [HttpPost]
+        [HttpPost("Register")]
         public async Task<ActionResult<ServiceResponse<int>>> Register(AddUserDTO user)
         {
             ServiceResponse<int> response = await _authRepository.Register(user);   
+
+            if(!response.success)
+            {
+                return BadRequest(response);
+            }
+            else
+                return Ok(response);
+        }
+
+        [HttpPost("Login")]
+        public async Task<ActionResult<ServiceResponse<int>>> Login(LoginUserDTO user)
+        {
+            ServiceResponse<string> response = await _authRepository.Login(user.userName,user.password);   
 
             if(!response.success)
             {
