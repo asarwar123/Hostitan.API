@@ -16,6 +16,6 @@ namespace Hostitan.API.Models
         public byte[] passwordHash { get; set; }
         [Required]
         public byte[] passwordSalt { get; set; }
-        public List<roles> userRoles { get; set; }
+        public List<UserRoles> userRoles { get; set; }
     }
 }

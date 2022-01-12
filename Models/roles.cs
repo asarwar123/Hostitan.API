@@ -10,6 +10,6 @@ namespace Hostitan.API.Models
         public string name { get; set; }
         public string description { get; set; }
         public bool active { get; set; } = true;
-        List<User> user {get;set;}
+        public List<UserRoles> userRoles { get; set; }
     }
 }

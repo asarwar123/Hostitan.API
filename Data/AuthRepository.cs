@@ -1,9 +1,12 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using AutoMapper;
 using Hostitan.API.Data;
 using Hostitan.API.DTO.Users;
 using Hostitan.API.Models;
 using Hostitan.API.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Hostitan_API.Data
 {
@@ -11,11 +14,13 @@ namespace Hostitan_API.Data
     {
         private readonly IMapper _mapper;
         private readonly DatabaseContext _dbContext;
+        private readonly IConfiguration _configuration;
 
-        public AuthRepository(IMapper mapper, DatabaseContext dbContext)
+        public AuthRepository(IMapper mapper, DatabaseContext dbContext,IConfiguration configuration)
         {
             _mapper = mapper;
             _dbContext = dbContext;
+            _configuration = configuration;
         }
         public async Task<ServiceResponse<string>> Login(string userName, string password)
         {
@@ -34,7 +39,7 @@ namespace Hostitan_API.Data
             }
             else
             {
-                resp.Data = user.userId.ToString();
+                resp.Data = GenerateToken(user);
                 resp.success=true;
                 resp.message="Logged in succesfully";
             }
@@ -105,6 +110,30 @@ namespace Hostitan_API.Data
 
                 return true;
             }
+        }
+
+        private string GenerateToken(User user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier,user.userId.ToString()),
+                new Claim(ClaimTypes.Name,user.fullName)
+            };
+
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("Token:Key").Value));
+            var credentials = new SigningCredentials(key,SecurityAlgorithms.HmacSha512Signature);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject= new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(1),
+                SigningCredentials = credentials
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token) ;
         }
     }
 }

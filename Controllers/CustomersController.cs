@@ -4,9 +4,12 @@ using Hostitan.API.Services;
 using System.Collections.Generic;
 using System.Linq;
 using Hostitan.API.DTO.Orders;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Hostitan.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("customers")]
     public class CustomersController : ControllerBase
@@ -23,6 +26,7 @@ namespace Hostitan.API.Controllers
 
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<GetCustomersDTO>>> GetCustomers(){
+            Guid uid = Guid.Parse(User.Claims.FirstOrDefault(x=>x.Type == ClaimTypes.NameIdentifier).Value);
             return Ok(await customerServices.GetAllCustomers());
         }        
 
